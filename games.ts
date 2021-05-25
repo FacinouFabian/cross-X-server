@@ -8,9 +8,9 @@ type Game = {
   id: string;
   themeId: number;
   players: Player[];
-  state: string;
-  isEnded: boolean;
-  round: number;
+  //  state: string;
+  //  isEnded: boolean;
+  // round: number;
 };
 
 const games: Game[] = [
@@ -29,9 +29,9 @@ const games: Game[] = [
         isLeader: false,
       },
     ],
-    state: "waiting",
-    isEnded: false,
-    round: 0,
+    //  state: "waiting",
+    // isEnded: false,
+    //  round: 0,
   },
 ];
 
