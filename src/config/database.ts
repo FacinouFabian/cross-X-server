@@ -23,10 +23,10 @@ const createTables = async () => {
   pool.connect();
 
   const queries = [
-    "CREATE TABLE users (uuid uuid PRIMARY KEY, name VARCHAR(100) NOT NULL)",
-    "CREATE TABLE games (id INT PRIMARY KEY, theme_id INT NOT NULL)",
+    "CREATE TABLE IF NOT EXISTS users (uuid uuid PRIMARY KEY, name VARCHAR(100) NOT NULL)",
+    "CREATE TABLE IF NOT EXISTS games (id SERIAL PRIMARY KEY, theme_id INT NOT NULL)",
     `
-    CREATE TABLE user_games(
+    CREATE TABLE IF NOT EXISTS user_games(
     user_uuid uuid NOT NULL,
     game_id INT NOT NULL,
     points INT DEFAULT 0,
@@ -44,21 +44,13 @@ const createTables = async () => {
   pool.end();
 };
 
-export const insert = () => {
-  const config = {
-    user: process.env.USER,
-    host: process.env.HOST,
-    password: process.env.PASSWORD,
-    port: parseInt(process.env.PORT),
-    database: process.env.DB_NAME,
-  };
-
-  const pool = new pg.Pool(config);
+export const query = (query: string) => {
+  const pool = new pg.Pool({ ...config, database: process.env.DB_NAME });
 
   pool.connect();
 
   return new Promise((resolve, reject) => {
-    pool.query(`CREATE DATABASE ${process.env.DB_NAME};`, (err, res) => {
+    pool.query(`${query};`, (err, res) => {
       console.log(err, res);
       if (err) reject(err);
       resolve(res);
@@ -69,5 +61,5 @@ export const insert = () => {
 
 export const initDatabase = async () => {
   await createDb();
-  await createTables();
+  /* await createTables(); */
 };
