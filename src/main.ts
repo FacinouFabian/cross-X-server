@@ -6,12 +6,11 @@ import events from "./core/events";
 import { prelude } from "./config/prelude";
 import { initDatabase } from "./config/database";
 
-
 const main = () => {
   // Every things start with a prelude 🙌😎
   try {
-    prelude()
-    initDatabase()
+    prelude();
+    initDatabase();
   } catch (error) {
     console.log(error);
   }
@@ -48,7 +47,6 @@ const main = () => {
   server.listen(5000, () => {
     console.log("listening on *:5000");
   });
+};
 
-}
-
-main()
+main();

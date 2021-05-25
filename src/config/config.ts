@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 export default {
   user: process.env.USER,
   host: process.env.HOST,

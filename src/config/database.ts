@@ -1,13 +1,8 @@
 import pg from "pg";
 
-const createDb = () => {
-  const config = {
-    user: process.env.USER,
-    host: process.env.HOST,
-    password: process.env.PASSWORD,
-    port: parseInt(process.env.PORT),
-  };
+import config from "./config";
 
+const createDb = () => {
   const pool = new pg.Pool(config);
 
   pool.connect();
@@ -23,15 +18,7 @@ const createDb = () => {
 };
 
 const createTables = async () => {
-  const config = {
-    user: process.env.USER,
-    host: process.env.HOST,
-    password: process.env.PASSWORD,
-    port: parseInt(process.env.PORT),
-    database: process.env.DB_NAME,
-  };
-
-  const pool = new pg.Pool(config);
+  const pool = new pg.Pool({ ...config, database: process.env.DB_NAME });
 
   pool.connect();
 
@@ -55,6 +42,29 @@ const createTables = async () => {
   }
 
   pool.end();
+};
+
+export const insert = () => {
+  const config = {
+    user: process.env.USER,
+    host: process.env.HOST,
+    password: process.env.PASSWORD,
+    port: parseInt(process.env.PORT),
+    database: process.env.DB_NAME,
+  };
+
+  const pool = new pg.Pool(config);
+
+  pool.connect();
+
+  return new Promise((resolve, reject) => {
+    pool.query(`CREATE DATABASE ${process.env.DB_NAME};`, (err, res) => {
+      console.log(err, res);
+      if (err) reject(err);
+      resolve(res);
+    });
+    pool.end();
+  });
 };
 
 export const initDatabase = async () => {
