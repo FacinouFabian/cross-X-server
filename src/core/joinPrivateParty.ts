@@ -2,8 +2,9 @@ import games from "../../games";
 
 const joinPrivateParty = ({ username, gameId }, io) => {
   /* TODO! transform with database */
+  //SELECT
   const match = games.find((game) => game.id === gameId);
-  // Insert Game
+  // Insert user_game 
   match.players.push(username);
 
   io.join(match.id);

@@ -1,9 +1,9 @@
 import games from "../../games";
 
 const startGame = ({ username, gameId }, io) => {
-  /* TODO! transform with database */
+
   const match = games.find((game) => game.id === gameId);
-  // SELECT USER
+  // SELECT user_game
   const leader = match.players.find(
     (user) => user.isLeader === true && user.name === username
   );

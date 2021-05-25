@@ -1,10 +1,10 @@
 import games from "../../games";
 
 const joinPublicParty = ({ username, themeId }, io) => {
-  /* TODO! transform with database */
+  /* SELECT  */
   const matchList = games.filter((game) => game.themeId === themeId);
   const match = matchList[Math.floor(Math.random() * matchList.length)];
-  // INSERT GAME
+  // INSERT USER_GAME
   match.players.push(username);
 
   io.join(match.id);
