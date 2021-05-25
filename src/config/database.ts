@@ -61,5 +61,5 @@ export const query = (query: string) => {
 
 export const initDatabase = async () => {
   await createDb();
-  /* await createTables(); */
+  await createTables();
 };
