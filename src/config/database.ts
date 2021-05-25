@@ -1,48 +1,63 @@
-import pg from "pg"
+import pg from "pg";
 
-const config = {
+const createDb = () => {
+  const config = {
     user: process.env.USER,
     host: process.env.HOST,
     password: process.env.PASSWORD,
     port: parseInt(process.env.PORT),
-    database: "postgres"
+  };
+
+  const pool = new pg.Pool(config);
+
+  pool.connect();
+
+  return new Promise((resolve, reject) => {
+    pool.query(`CREATE DATABASE ${process.env.DB_NAME};`, (err, res) => {
+      console.log(err, res);
+      if (err) reject(err);
+      resolve(res);
+    });
+    pool.end();
+  });
 };
 
-const createDb = async (pool: pg.Pool) => {
-    pool.query(`CREATE DATABASE ${process.env.DB_NAME};`, (err, res) => {
-        console.log(err, res);
-    });
-}
+const createTables = async () => {
+  const config = {
+    user: process.env.USER,
+    host: process.env.HOST,
+    password: process.env.PASSWORD,
+    port: parseInt(process.env.PORT),
+    database: process.env.DB_NAME,
+  };
 
-const createTable = async (pool: pg.Pool, queries: string[]) => {
-    queries.map((query) => {
-        pool.query(query, (err, res) => {
-            console.log(err, res);
-            pool.end();
-        });
-    })
+  const pool = new pg.Pool(config);
 
-}
+  pool.connect();
+
+  const queries = [
+    "CREATE TABLE users (uuid uuid PRIMARY KEY, name VARCHAR(100) NOT NULL)",
+    "CREATE TABLE games (id INT PRIMARY KEY, theme_id INT NOT NULL)",
+    `
+    CREATE TABLE user_games(
+    user_uuid uuid NOT NULL,
+    game_id INT NOT NULL,
+    points INT DEFAULT 0,
+    user_isLeader BOOLEAN DEFAULT false,
+    PRIMARY KEY (user_uuid, game_id),
+    FOREIGN KEY (user_uuid) REFERENCES users(uuid) ON UPDATE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games(id) ON UPDATE CASCADE)
+    `,
+  ];
+
+  for (const query of queries) {
+    await pool.query(`${query};`);
+  }
+
+  pool.end();
+};
 
 export const initDatabase = async () => {
-    const pool = new pg.Pool(config);
-    await createDb(pool)
-    const queries = [
-        "CREATE TABLE user(uuid UUID PRIMARY KEY, name text NOT NULL)",
-        "CREATE TABLE game(id integer PRIMARY KEY AUTO_INCREMENT, theme_id integer NOT NULL)",
-        `
-        CREATE TABLE user_game(
-        user_uuid integer NOT NULL,
-        game_id integer NOT NULL,
-        points integer DEFAULT 0,
-        user_isLeader boolean DEFAULT false,
-        PRIMARY KEY (user_uuid, game_id),
-        FOREIGN KEY (user_uuid) REFERENCES user(uuid) ON UPDATE CASCADE,
-        FOREIGN KEY (game_id) REFERENCES game(id) ON UPDATE CASCADE)
-        `
-    ]
-    await createTable(pool, queries)
-
-
-}
-
+  await createDb();
+  await createTables();
+};
