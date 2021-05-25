@@ -1,22 +1,40 @@
-import express from 'express'
+import express from "express";
 
-import http from 'http'
-import { Server } from 'socket.io'
-import { EventEmitter } from "events"
+import http from "http";
+import { Server } from "socket.io";
+import cors from "cors";
+import { EventEmitter } from "events";
 
+import events from "./core/events";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
-
-app.get('/', (req, res) => {
-  res.json({ response: "ok" })
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+  },
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+app.use(cors());
+
+app.get("/", (req, res) => {
+  res.json({ response: "ok" });
 });
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+io.on("connection", (socket) => {
+  console.log("a user connected");
+});
+
+io.on("yes", () => {
+  console.log("hello");
+});
+
+events.map(({ eventName, action }) => {
+  io.on(eventName, (payload) => action(payload, io));
+});
+
+server.listen(5000, () => {
+  console.log("listening on *:5000");
 });
