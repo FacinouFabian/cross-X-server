@@ -24,7 +24,7 @@ const createTables = async () => {
 
   const queries = [
     "CREATE TABLE IF NOT EXISTS users (uuid uuid PRIMARY KEY, name VARCHAR(100) NOT NULL)",
-    "CREATE TABLE IF NOT EXISTS games (id varchar(100) PRIMARY KEY, theme_id INT NOT NULL)",
+    "CREATE TABLE IF NOT EXISTS games (id SERIAL PRIMARY KEY, theme_id INT NOT NULL)",
     `
     CREATE TABLE IF NOT EXISTS user_games(
     user_uuid uuid NOT NULL,
