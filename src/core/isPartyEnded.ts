@@ -1,13 +1,10 @@
 import games from "../../games";
+import { query } from "../config/database";
 
-const isPartyEnded = ({ winner, gameId }, io) => {
-  /* TODO! transform with database */
-  //const match = games.find((game) => game.id === gameId);
-
-  // match.state = "ended";
-  // match.isEnded = true;
-
+const isPartyEnded = async ({ winner, user_uuid, gameId }, io) => {
   io.join(gameId);
+  await query("UPDATE games SET state=$1 WHERE id=$2", ["ended", gameId])
+  await query("UPDATE user_games SET user_hasWin=$1 WHERE user_uuid=$2 AND game_id=$3", [true, user_uuid, gameId])
   io.to(gameId).emit("ended", { winner });
   io.leave(gameId);
 };

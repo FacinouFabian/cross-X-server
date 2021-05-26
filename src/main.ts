@@ -34,15 +34,12 @@ const main = () => {
 
   io.on("connection", (socket) => {
     console.log("a user connected");
+    events.map(({ eventName, action }) => {
+      socket.on(eventName, (payload) => action(payload, io, socket));
+    });
   });
 
-  io.on("yes", () => {
-    console.log("hello");
-  });
 
-  events.map(({ eventName, action }) => {
-    io.on(eventName, (payload) => action(payload, io));
-  });
 
   server.listen(5000, () => {
     console.log("listening on *:5000");

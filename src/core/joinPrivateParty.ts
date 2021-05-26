@@ -1,15 +1,12 @@
 import games from "../../games";
+import { query } from "../config/database";
 
-const joinPrivateParty = ({ username, gameId }, io) => {
-  /* TODO! transform with database */
-  //SELECT
-  const match = games.find((game) => game.id === gameId);
-  // Insert user_game 
-  match.players.push(username);
+const joinPrivateParty = async ({ user_uuid, username, gameId }, io) => {
 
-  io.join(match.id);
-  io.to(match.id).emit("userJoined", match);
-  io.leave(match.id);
-};
+  io.join(gameId);
+  await query(`INSERT INTO user_games (user_uuid,game_id) VALUES ($1,$2)`, [user_uuid, gameId])
+  io.to(gameId).emit("userJoined", username);
+  io.leave(gameId);
 
+}
 export default joinPrivateParty;

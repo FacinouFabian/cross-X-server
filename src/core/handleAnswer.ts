@@ -1,24 +1,21 @@
 import games from "../../games";
+import { query } from "../config/database";
 
-const handleAnswer = ({ username, gameId, correct }, io) => {
+const handleAnswer = async ({ user_uuid, gameId, correct }, io) => {
   /* TODO! transform with database */
   //SELECT 
-  const match = games.find((game) => game.id === gameId);
 
-  io.join(match.id);
+
+  io.join(gameId);
 
   if (correct) {
     // UPDATE dans user_game des points 
-    const sender = match.players.find((user) => user.name === username);
-    // UPDATE user
-    sender.points++;
-    //  match.round++;
-
-    io.to(match.id).emit("goodAnswer", match);
+    const res = await query("UPDATE user_games SET points=points+1 WHERE user_uuid=$1 AND game_id=$2 RETURNING points,user_uuid", [user_uuid, gameId])
+    io.to(gameId).emit("goodAnswer", res.rows);
   } else {
-    io.to(match.id).emit("badAnswer", match);
+    io.to(gameId).emit("badAnswer");
   }
-  io.leave(match.id);
+  io.leave(gameId);
 };
 
 export default handleAnswer;

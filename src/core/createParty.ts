@@ -1,30 +1,15 @@
 import { v4 } from "uuid";
+import { query } from "../config/database";
 
-import games from "../../games";
 
-const createParty = ({ username, themeId }, io) => {
-  /* TODO! transform with database */
-  const data = games;
-
-  /* db INSERT dans game et dans user_game avec isLeader true et recup la game */
+const createParty = async ({ user_uuid, theme_id, is_private }, io) => {
   const game = {
     id: v4(),
-    themeId: 2,
-    players: [
-      {
-        name: username,
-        points: 0,
-        isLeader: true,
-      },
-    ],
-    state: "waiting",
-    isEnded: false,
-    round: 0,
-  };
-
-  data.push(game);
-
-
+    theme_id,
+    is_private
+  }
+  await query(`INSERT INTO games (id,theme_id,is_private) VALUES ($1,$2,$3)`, [game.id, theme_id, game.is_private])
+  await query(`INSERT INTO user_games (user_uuid,game_id,user_isLeader) VALUES ($1,$2,$3)`, [user_uuid, game.id, true])
   console.log("create event");
   io.join(game.id);
   io.to(game.id).emit("partyCreated", game);

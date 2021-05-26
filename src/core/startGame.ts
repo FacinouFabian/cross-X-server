@@ -1,24 +1,23 @@
 import games from "../../games";
+import { query } from "../config/database";
 
-const startGame = ({ username, gameId }, io) => {
+const startGame = async ({ user_uuid, gameId }, io, socket) => {
 
-  const match = games.find((game) => game.id === gameId);
-  // SELECT user_game
-  const leader = match.players.find(
-    (user) => user.isLeader === true && user.name === username
-  );
+  const leader = await query(`SELECT user_uuid  FROM user_games WHERE game_id=$1 AND user_uuid=$2 AND user_isLeader=$3`, [gameId, user_uuid, true]).then((res) => {
+    return res.rows[0]
+  }).catch(() => null)
 
-  io.join(match.id);
-
+  io.join(gameId);
   if (!leader) {
-    /* TODO! send to user socketId instead of match.id */
-    io.to(match.id).emit("error", { message: "you are not the party leader." });
+    /* TODO! send to user socketId instead of gameId */
+    socket.emit("error", { message: "you are not the party leader." });
   } else {
     // match.state = "started";
-    io.to(match.id).emit("start");
+    await query("UPDATE games SET state=$1 WHERE id=$2", ["started", gameId])
+    io.to(gameId).emit("start");
   }
+  io.leave(gameId);
 
-  io.leave(match.id);
 };
 
 export default startGame;
