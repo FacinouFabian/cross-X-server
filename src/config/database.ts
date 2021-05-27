@@ -1,7 +1,6 @@
 import pg from 'pg'
 import config from './config'
-import readline from 'readline'
-import createUser from '../core/createUser'
+
 
 const createDb = () => {
   const pool = new pg.Pool(config)
