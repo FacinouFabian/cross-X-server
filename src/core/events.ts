@@ -8,6 +8,7 @@ import joinPublicParty from "./joinPublicParty";
 import startGame from "./startGame";
 import eliminateUser from "./eliminateUser";
 import userHasBuzz from "./userHasBuzz";
+import createUser from "./createUser";
 
 
 
@@ -28,8 +29,12 @@ const events: CustomEvent[] = [
     action: joinPublicParty as Action,
   },
   {
-    eventName: "create",
+    eventName: "createParty",
     action: createParty as Action,
+  },
+  {
+    eventName: "createUser",
+    action: createUser as Action,
   },
   {
     eventName: "answer",

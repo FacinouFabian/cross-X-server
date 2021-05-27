@@ -66,4 +66,5 @@ export const initDatabase = async () => {
   await createDb();
   await createTables();
 
+
 };
