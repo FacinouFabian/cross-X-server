@@ -10,7 +10,9 @@ const main = () => {
   // Every things start with a prelude 🙌😎
   try {
     prelude()
-    initDatabase()
+    if (process.env.NODE_ENV != 'production') {
+      initDatabase()
+    }
   } catch (error) {
     console.log(error)
   }
