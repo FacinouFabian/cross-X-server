@@ -59,28 +59,16 @@ const createTables = async () => {
   pool.end()
 }
 
-const askReset = () => {
-  const ask = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  })
-
-  ask.question('Database already exists. Do you want to reset it ? (yes/no)', (response) => {
-    if (response === 'yes') {
-      dropDb()
-        .then(async () => {
-          await createDb()
-          await createTables()
-          console.log('Done.')
-        })
-        .catch((e) => {
-          console.log(e)
-        })
-    } else {
-      console.log('Server unable to create database because it already exists.')
-    }
-    ask.close()
-  })
+const resetDb = () => {
+  dropDb()
+    .then(async () => {
+      await createDb()
+      await createTables()
+      console.log('Done.')
+    })
+    .catch((e) => {
+      console.log(e)
+    })
 }
 
 export const query = (query: string, data: unknown[] = []): Promise<pg.QueryResult<any>> => {
@@ -103,6 +91,6 @@ export const initDatabase = async () => {
       await createTables()
     })
     .catch(() => {
-      askReset()
+      resetDb()
     })
 }
