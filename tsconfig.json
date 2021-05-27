@@ -10,6 +10,7 @@
     "strict": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "noImplicitAny": false,
     "baseUrl": "src",
     "paths": {
       "@/core/*": ["core/*"]

@@ -10,7 +10,6 @@ const startGame = async ({ user_uuid, gameId }, io, socket) => {
     })
     .catch(() => null)
 
-  io.join(gameId)
   if (!leader) {
     /* TODO! send to user socketId instead of gameId */
     socket.emit('error', { message: 'you are not the game leader.' })
@@ -19,7 +18,6 @@ const startGame = async ({ user_uuid, gameId }, io, socket) => {
     await query('UPDATE games SET state=$1 WHERE id=$2', ['started', gameId])
     io.to(gameId).emit('start')
   }
-  io.leave(gameId)
 }
 
 export default startGame

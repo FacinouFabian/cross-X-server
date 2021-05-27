@@ -8,13 +8,13 @@ Un utilisateur lance l'application
 
 ## Join
 
-Un utilisateur rejoint une partie => joinParty(username, gameId?, themeId?)
-partie public => joinParty(username, themeId?)
-partie privé => joinParty(username, gameId)
+Un utilisateur rejoint une partie => joinGame(username, gameId?, themeId?)
+partie public => joinGame(username, themeId?)
+partie privé => joinGame(username, gameId)
 
 ## Create
 
-createParty(settings) => retourne le gameId
+createGame(settings) => retourne le gameId
 
 ```typescript
 type GameSetting {
@@ -29,7 +29,7 @@ type GameSetting {
 
 startGame(gameId)
 
-## Party
+## Game
 
 handleAnswer(username,gameId, correct) => augmente le nb de points de l'user s'il repond bien, question suivante , on retourne les stats de tout le monde
 
@@ -37,7 +37,7 @@ userHasBuzz(username,gameId) => stop music , launch timer , block all other user
 
 userEliminated(username,gameId)
 
-isPartyEnded(gameId) => renvoie les stats de la partie
+isGameEnded(gameId) => renvoie les stats de la partie
 
 ## License
 

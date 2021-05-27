@@ -35,7 +35,7 @@ const main = () => {
   io.listen(server)
 
   io.on('connection', (socket) => {
-    console.log('a user connected')
+    console.log('a user connected', socket.id)
     events.map(({ eventName, action }) => {
       socket.on(eventName, (payload) => action(payload, io, socket))
     })
