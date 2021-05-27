@@ -1,15 +1,21 @@
-import { v4 } from "uuid";
-import { query } from "../config/database";
+import { v4 } from 'uuid'
+import { query } from '../config/database'
 
+const createUser = async ({ username }, _, socket) => {
+  console.log('createUser event')
 
-const createUser = async ({ username }, io) => {
   const user = {
     uuid: v4(),
-    name: username
+    name: username,
   }
   await query(`INSERT INTO users(uuid,name) VALUES ($1,$2)`, [user.uuid, user.name])
-  console.log("createUser event");
-  io.emit("userCreated", user);
-};
+  await query(`INSERT INTO users(uuid,name) VALUES ($1,$2)`, [user.uuid, user.name])
+    .then(() => {
+      socket.emit('userCreated', user)
+    })
+    .catch(() => {
+      socket.emit('error', { message: "Ce nom d'utilisateur est déjà utilisé." })
+    })
+}
 
-export default createUser;
+export default createUser

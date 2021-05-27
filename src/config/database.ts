@@ -1,30 +1,42 @@
-import pg from "pg";
-import { v4 } from "uuid";
-import config from "./config";
-import { insert } from "../queries/queries";
+import pg from 'pg'
+import config from './config'
+import readline from 'readline'
 
 const createDb = () => {
-  const pool = new pg.Pool(config);
+  const pool = new pg.Pool(config)
 
-  pool.connect();
+  pool.connect()
 
   return new Promise((resolve, reject) => {
     pool.query(`CREATE DATABASE ${process.env.DB_NAME};`, (err, res) => {
-      console.log(err, res);
-      if (err) reject(err);
-      resolve(res);
-    });
-    pool.end();
-  });
-};
+      if (err) reject(err)
+      resolve(res)
+    })
+    pool.end()
+  })
+}
+
+const dropDb = () => {
+  const pool = new pg.Pool(config)
+
+  pool.connect()
+
+  return new Promise((resolve, reject) => {
+    pool.query(`DROP DATABASE IF EXISTS ${process.env.DB_NAME};`, (err, res) => {
+      if (err) reject(err)
+      resolve(res)
+    })
+    pool.end()
+  })
+}
 
 const createTables = async () => {
-  const pool = new pg.Pool({ ...config, database: process.env.DB_NAME });
+  const pool = new pg.Pool({ ...config, database: process.env.DB_NAME })
 
-  pool.connect();
+  pool.connect()
 
   const queries = [
-    "CREATE TABLE IF NOT EXISTS users (uuid uuid PRIMARY KEY, name VARCHAR(100) NOT NULL)",
+    'CREATE TABLE IF NOT EXISTS users (uuid uuid PRIMARY KEY, name VARCHAR(100) NOT NULL UNIQUE)',
 
     `CREATE TABLE IF NOT EXISTS games (id VARCHAR(100) PRIMARY KEY, theme_id INT NOT NULL, is_private  BOOLEAN DEFAULT false, state varchar(50) DEFAULT 'waiting' )`,
     `
@@ -38,33 +50,59 @@ const createTables = async () => {
     FOREIGN KEY (user_uuid) REFERENCES users(uuid) ON UPDATE CASCADE,
     FOREIGN KEY (game_id) REFERENCES games(id) ON UPDATE CASCADE)
     `,
-  ];
+  ]
 
   for (const query of queries) {
-    await pool.query(`${query};`);
+    await pool.query(`${query};`)
   }
 
-  pool.end();
-};
+  pool.end()
+}
+
+const askReset = () => {
+  const ask = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  })
+
+  ask.question('Database already exists. Do you want to reset it ? (yes/no)', (response) => {
+    if (response === 'yes') {
+      dropDb()
+        .then(async () => {
+          await createDb()
+          await createTables()
+          console.log('Done.')
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    } else {
+      console.log('Server unable to create database because it already exists.')
+    }
+    ask.close()
+  })
+}
 
 export const query = (query: string, data: unknown[] = []): Promise<pg.QueryResult<any>> => {
-  const pool = new pg.Pool({ ...config, database: process.env.DB_NAME });
+  const pool = new pg.Pool({ ...config, database: process.env.DB_NAME })
 
-  pool.connect();
+  pool.connect()
 
   return new Promise((resolve, reject) => {
     pool.query(`${query};`, data, (err, res) => {
-      console.log(err, res);
-      if (err) reject(err);
-      resolve(res);
-    });
-    pool.end();
-  });
-};
+      if (err) reject(err)
+      resolve(res)
+    })
+    pool.end()
+  })
+}
 
 export const initDatabase = async () => {
-  await createDb();
-  await createTables();
-
-
-};
+  createDb()
+    .then(async () => {
+      await createTables()
+    })
+    .catch(() => {
+      askReset()
+    })
+}

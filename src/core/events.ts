@@ -1,64 +1,51 @@
-import joinPrivateParty from "./joinPrivateParty";
-import createParty from "./createParty";
-import { Server, Socket, } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import handleAnswer from "./handleAnswer";
-import isPartyEnded from "./isPartyEnded";
-import joinPublicParty from "./joinPublicParty";
-import startGame from "./startGame";
-import eliminateUser from "./eliminateUser";
-import userHasBuzz from "./userHasBuzz";
-import createUser from "./createUser";
-
-
-
-type Action = <T, U>(payload: T, io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>, socket?: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) => U;
-
-type CustomEvent = {
-  eventName: string;
-  action: Action
-};
+import joinPrivateGame from './joinPrivateGame'
+import createGame from './createGame'
+import handleAnswer from './handleAnswer'
+import isGameEnded from './isGameEnded'
+import joinPublicGame from './joinPublicGame'
+import startGame from './startGame'
+import eliminateUser from './eliminateUser'
+import userHasBuzz from './userHasBuzz'
+import { Action, CustomEvent } from '../../definitions'
+import createUser from './createUser'
 
 const events: CustomEvent[] = [
   {
-    eventName: "joinPrivate",
-    action: joinPrivateParty as Action,
+    eventName: 'joinPrivate',
+    action: joinPrivateGame as Action,
   },
   {
-    eventName: "joinPublic",
-    action: joinPublicParty as Action,
+    eventName: 'joinPublic',
+    action: joinPublicGame as Action,
   },
   {
-    eventName: "createParty",
-    action: createParty as Action,
+    eventName: 'createGame',
+    action: createGame as Action,
   },
   {
-    eventName: "createUser",
+    eventName: 'createUser',
     action: createUser as Action,
   },
   {
-    eventName: "answer",
+    eventName: 'answer',
     action: handleAnswer as Action,
   },
   {
-    eventName: "endParty",
-    action: isPartyEnded as Action,
+    eventName: 'endGame',
+    action: isGameEnded as Action,
   },
   {
-    eventName: "start",
+    eventName: 'start',
     action: startGame as Action,
   },
   {
-    eventName: "eliminate",
+    eventName: 'eliminate',
     action: eliminateUser as Action,
   },
   {
-    eventName: "buzz",
+    eventName: 'buzz',
     action: userHasBuzz as Action,
   },
+]
 
-
-
-];
-
-export default events;
+export default events

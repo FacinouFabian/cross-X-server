@@ -4,9 +4,7 @@
     "moduleResolution": "node",
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "lib": [
-      "esnext"
-    ],
+    "lib": ["esnext"],
     "allowJs": false,
     "noEmit": true,
     "strict": true,
@@ -14,16 +12,9 @@
     "experimentalDecorators": true,
     "baseUrl": "src",
     "paths": {
-      "@/core/*": [
-        "core/*"
-      ],
+      "@/core/*": ["core/*"]
     }
   },
-  "include": [
-    "src",
-    "definitions.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "definitions.d.ts"],
+  "exclude": ["node_modules", ".prettierrc.js"]
 }
