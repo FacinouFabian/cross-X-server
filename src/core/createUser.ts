@@ -35,7 +35,7 @@ const createUser = async ({ username, avatarData }, io, socket) => {
     showBackground,
     size,
     skinTone,
-    user_uuid,
+    user_uuid
   ) VALUES (${params})`
 
   console.log('params ->', params)
