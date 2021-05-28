@@ -11,9 +11,12 @@ const joinPublicGame = async ({ username, user_uuid, themeId }, io, socket) => {
     .catch(() => null)
   if (game) {
     await query(`INSERT INTO user_games (user_uuid,game_id) VALUES ($1,$2)`, [user_uuid, game.id])
-    console.log('done.')
+
+    const avatar = await query(`SELECT * FROM avatars WHERE user_uuid=$1`, [user_uuid])
+
     socket.join(game.id)
-    io.in(game.id).emit('userJoined', username)
+
+    io.in(game.id).emit('userJoined', { username, gameID: game.id, avatar })
   } else {
     console.log('echec.')
   }

@@ -1,7 +1,6 @@
 import pg from 'pg'
 import config from './config'
 
-
 const createDb = () => {
   const pool = new pg.Pool(config)
 
@@ -79,9 +78,9 @@ export const query = (query: string, data: unknown[] = []): Promise<pg.QueryResu
   return new Promise((resolve, reject) => {
     pool.query(`${query};`, data, (err, res) => {
       if (err) reject(err)
+      pool.end()
       resolve(res)
     })
-    pool.end()
   })
 }
 

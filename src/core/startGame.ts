@@ -12,7 +12,7 @@ const startGame = async ({ user_uuid, gameId }, io, socket) => {
 
   if (!leader) {
     /* TODO! send to user socketId instead of gameId */
-    socket.emit('error', { message: 'you are not the game leader.' })
+    socket.emit('error', { error: 'you are not the game leader.' })
   } else {
     // match.state = "started";
     await query('UPDATE games SET state=$1 WHERE id=$2', ['started', gameId])
