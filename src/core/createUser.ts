@@ -69,7 +69,7 @@ const createUser = async ({ username, avatarData }, io, socket) => {
       io.to(socket.id).emit('userCreated', { error: "Ce nom d'utilisateur est déjà utilisé." })
     })
     .then(async () => {
-      await query(avatarQuery, [avatar])
+      await query(avatarQuery, avatar)
     })
     .catch(() => {
       io.to(socket.id).emit('userCreated', { error: "Erreur lors de la création de l'avatar, vérifiez vos données." })
