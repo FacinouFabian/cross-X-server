@@ -9,8 +9,8 @@ const createUser = async ({ username, avatarData }, io, socket) => {
 
   let params = ''
 
-  for (let i = 1; i <= 20; i++) {
-    const value = i === 20 ? `\$${i}` : `\$${i},`
+  for (let i = 1; i <= 21; i++) {
+    const value = i === 21 ? `\$${i}` : `\$${i},`
     params += value
   }
 
@@ -41,6 +41,8 @@ const createUser = async ({ username, avatarData }, io, socket) => {
   console.log('avatardata ->', avatarData)
 
   console.log('params ->', params)
+
+  console.log('avatarQuery ->', avatarQuery)
 
   await query(`INSERT INTO users(uuid,name) VALUES ($1,$2)`, [user.uuid, user.name])
     .catch(() => {
