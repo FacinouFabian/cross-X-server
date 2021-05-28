@@ -38,11 +38,11 @@ const createUser = async ({ username, avatarData }, io, socket) => {
     user_uuid uuid NOT NULL,
   ) VALUES (${params})`
 
-  console.log('avatardata ->', avatarData)
-
   console.log('params ->', params)
 
   console.log('avatarQuery ->', avatarQuery)
+
+  console.log([...avatarData, user.uuid])
 
   await query(`INSERT INTO users(uuid,name) VALUES ($1,$2)`, [user.uuid, user.name])
     .catch(() => {
