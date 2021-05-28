@@ -38,6 +38,10 @@ const createUser = async ({ username, avatarData }, io, socket) => {
     user_uuid uuid NOT NULL,
   ) VALUES (${params})`
 
+  console.log('avatardata ->', avatarData)
+
+  console.log('params ->', params)
+
   await query(`INSERT INTO users(uuid,name) VALUES ($1,$2)`, [user.uuid, user.name])
     .catch(() => {
       io.to(socket.id).emit('userCreated', { error: "Ce nom d'utilisateur est déjà utilisé." })
