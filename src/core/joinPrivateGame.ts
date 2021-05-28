@@ -9,7 +9,7 @@ const joinPrivateGame = async ({ user_uuid, username, gameId }, io, socket) => {
   if (game) {
     await query(`INSERT INTO user_games (user_uuid,game_id) VALUES ($1,$2)`, [user_uuid, gameId])
 
-    const avatar = await query(`SELECT * [except id,user_uuid] FROM avatars WHERE user_uuid=$1`, [user_uuid])
+    const avatar = await query(`SELECT * FROM avatars WHERE user_uuid=$1`, [user_uuid])
 
     socket.join(gameId)
     socket.emit('userJoined', { user_uuid, username, avatar })
