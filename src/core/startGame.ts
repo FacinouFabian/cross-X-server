@@ -16,7 +16,7 @@ const startGame = async ({ user_uuid, gameId }, io, socket) => {
   } else {
     // match.state = "started";
     await query('UPDATE games SET state=$1 WHERE id=$2', ['started', gameId])
-    io.to(gameId).emit('start')
+    io.in(gameId).emit('start')
   }
 }
 
