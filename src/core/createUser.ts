@@ -38,18 +38,38 @@ const createUser = async ({ username, avatarData }, io, socket) => {
     user_uuid
   ) VALUES (${params})`
 
-  console.log('params ->', params)
+  const avatar = [
+    avatarData.accessory,
+    avatarData.bgColor,
+    avatarData.bgShape,
+    avatarData.body,
+    avatarData.clothing,
+    avatarData.clothingColor,
+    avatarData.eyebrows,
+    avatarData.eyes,
+    avatarData.facialHair,
+    avatarData.graphic,
+    avatarData.hair,
+    avatarData.hairColor,
+    avatarData.hat,
+    avatarData.hatColor,
+    avatarData.lashes,
+    avatarData.lipColor,
+    avatarData.mouth,
+    avatarData.showBackground,
+    avatarData.size,
+    avatarData.skinTone,
+    user.uuid,
+  ]
 
-  console.log('avatarQuery ->', avatarQuery)
-
-  console.log([...avatarData, user.uuid])
+  console.log(avatar)
 
   await query(`INSERT INTO users(uuid,name) VALUES ($1,$2)`, [user.uuid, user.name])
     .catch(() => {
       io.to(socket.id).emit('userCreated', { error: "Ce nom d'utilisateur est déjà utilisé." })
     })
     .then(async () => {
-      await query(avatarQuery, [...avatarData, user.uuid])
+      await query(avatarQuery, [avatar])
     })
     .catch(() => {
       io.to(socket.id).emit('userCreated', { error: "Erreur lors de la création de l'avatar, vérifiez vos données." })
