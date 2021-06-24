@@ -1,4 +1,4 @@
 {
-  "name": "quizzMusical",
-  "env": ["HOST", "USER", "PASSWORD", "DB_NAME"]
+  "name": "cross6x",
+  "env": ["PORT"]
 }

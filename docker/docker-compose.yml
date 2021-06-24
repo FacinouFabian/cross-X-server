@@ -4,5 +4,5 @@ services:
     build:
       dockerfile: ./docker/Dockerfile
       context: ../
-    image: efrei/my-s3
-    container_name: my-s3
+    image: efrei/cross-X
+    container_name: cross-X
