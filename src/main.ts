@@ -47,8 +47,14 @@ const main = () => {
     }
 
     socket.on('call-user', (data: any) => {
-      console.log('yes')
       socket.to(data.to).emit('call-made', {
+        offer: data.offer,
+        socket: socket.id,
+      })
+    })
+
+    socket.on('start-call', (data: any) => {
+      socket.to(data.to).emit('call-started', {
         offer: data.offer,
         socket: socket.id,
       })
